@@ -1,0 +1,24 @@
+on:
+  pull_request:
+    types: [edited, opened, reopened, synchronize]
+  issue_comment:
+
+# cancel old edit events being processed
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+  
+name: Checkmate
+jobs:
+  validate-checklists:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Validate Checklists
+        uses: roryq/checkmate@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          paths: |
+            '**':
+              - I have got the grammar police to proofread my changes.
+              - I have double checked the indentation.
